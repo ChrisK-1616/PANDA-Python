@@ -94,9 +94,6 @@ class Appointment(models.Model):
                           as a foreign key into the Clinician models
     :property department: reference to the department that the appointment is within persisted
                           as a foreign key into the Department models
-    :property postcode:   home address postcode of the patient persisted as a string of up
-                          to 8 characters and is obtained from the postcode held in the
-                          patient model referenced by this appointment
     :property uuid:       UUID style unique identifier for the appointment persisted as a
                           string of exactly 36 characters
     """
@@ -106,7 +103,6 @@ class Appointment(models.Model):
     duration = models.DurationField()
     clinician = models.ForeignKey(Clinician, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    postcode = models.CharField(max_length=8)
     uuid = models.CharField(max_length=36)
 
     def __str__(self):
@@ -114,6 +110,6 @@ class Appointment(models.Model):
                 {{'patient': '{self.patient.nhs_number}'}}, {{'status': '{self.status}'}},
                 {{'time': '{self.time}'}}, {{'duration': '{self.duration}'}},
                 {{'clinician': '{self.clinician.name}'}},
-                {{'department': '{self.clinician.department}'}},
+                {{'department': '{self.department.name}'}},
                 {{'postcode': '{self.patient.postcode}'}}, {{'id': '{self.uuid}'}}
                 """
