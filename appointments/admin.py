@@ -5,5 +5,11 @@
 
 
 from django.contrib import admin
+from .models import Department, Clinician, Patient, Appointment
 
 # Register your models here.
+# su: chris em: chris.knowles@btinternet.com pw: P@zzw0rd
+admin.site.register(Department)
+admin.site.register(Clinician)
+admin.site.register(Patient)
+admin.site.register(Appointment)
