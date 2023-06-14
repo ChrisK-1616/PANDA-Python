@@ -180,7 +180,7 @@ Similar to the retrieve API call, make an HTTP client call of the URL form (with
 Deletion will only occur if the appointment is found and if it fails then a suitable message is returned in the HTTP response JSON string 
 
   
-Desing Thinking, Missing Functions and Opportunities for Further Refactoring and Additional Features
+Design Thinking, Missing Functions and Opportunities for Further Refactoring and Additional Features
 ====================================================================================================
   
  1. Why choose Django for the framework? Yes it is one of the larger "full stack" frameworks and we are not interested in the frontend, however it is a
@@ -199,3 +199,15 @@ Desing Thinking, Missing Functions and Opportunities for Further Refactoring and
  response messages. This is a feature of the Django package but was not implemented at this stage. Secondly, there is no attempt to process the
  appointments according to cancellation or missed appointment times. This is probably the most servere criticism of this solution and is seen as a
  first priority of any future feature inclusion.
+
+ 4. There are automated tests available in the "tests.py" script (using the package unittest which forms part of a standard Python install) and these
+ can be run using a suitable testrunner environment (they were developed along with the solution as a whole using the PyCharm IDE which includes such
+ a facility). All API calls were tested by hand using the supplied sample data but it would be much more beneficial to produce automated tests. The
+ Django framework does provide automated testing support but I was not familiar with it enough to get anything substantial working - please look at
+ my automated tests in "tests.py" script which exercise the functionality of the NHS Number checksum checker and the postcode coercing feature that
+ was provided.
+  
+ Depite the missing features and the opportunities for refactoring, reworking and enhancing detailed above I do believe that a major part of the task
+ solutions have been implemented.
+  
+ Chris Knowles.
