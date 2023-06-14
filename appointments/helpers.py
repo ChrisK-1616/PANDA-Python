@@ -63,7 +63,7 @@ def coerce_postcode(postcode: str) -> str:
     specification given in https://ideal-postcodes.co.uk/guides/uk-postcode-format, note
     this function does not attempt to validate a postcode, it only ensures that the
     returned postcode is compliant with the Outward Code and Inward Code form of a
-    valid postcode
+    valid UK postcode
 
     :param postcode: postcode to coerce as string
 
