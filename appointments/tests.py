@@ -15,20 +15,20 @@ sample_patients = [
     {"nhs_number": "1953262716", "name": "Dr Ian Hall", "date_of_birth": "1963-08-27", "postcode": "WA55 8HE"},
     {"nhs_number": "0021403597", "name": "Dr Bryan Hall", "date_of_birth": "2002-02-12", "postcode": "M4 2ST"},
     {"nhs_number": "0240288238", "name": "Mr Lawrence Lucas", "date_of_birth": "1954-09-10", "postcode": "N1 5ZG"},
-    {"nhs_number": "0699052556", "name": "Marian Smith", "date_of_birth": "1930-05-09", "postcode": "TF0 9DA"},
+    {"nhs_number": "0699052556", "name": "Marian Smith", "date_of_birth": "1930-05-09", "postcode": "TF0 9DA"},  # Used as sample - added through Django Admin facility
     {"nhs_number": "0544469364", "name": "Dr Abigail Hall", "date_of_birth": "2002-11-28", "postcode": "HP7H 2AS"},
     {"nhs_number": "1635754941", "name": "Mr Douglas Donnelly", "date_of_birth": "2011-11-10", "postcode": "W7U 5ZG"},
     {"nhs_number": "1431315257", "name": "Kimberley Griffiths", "date_of_birth": "1910-07-01", "postcode": "MK8W 6YX"},
     {"nhs_number": "1859995799", "name": "Mary Thomas", "date_of_birth": "1928-09-16", "postcode": "RH92 8XS"},
-    {"nhs_number": "1685807151", "name": "Dr Julie Smith", "date_of_birth": "1940-02-05", "postcode": "S95 8GE"},
+    {"nhs_number": "1685807151", "name": "Dr Julie Smith", "date_of_birth": "1940-02-05", "postcode": "S95 8GE"},  # Used as sample - added through Django Admin facility
     {"nhs_number": "1962097471", "name": "Nicholas Rowley", "date_of_birth": "1991-10-16", "postcode": "DT8 5BW"},
     {"nhs_number": "0803542917", "name": "Mrs Marian Bailey", "date_of_birth": "1987-03-25", "postcode": "S65 7QW"},
     {"nhs_number": "1099239362", "name": "Mr Daniel Ahmed", "date_of_birth": "1928-05-24", "postcode": "SY88 2ED"},
-    {"nhs_number": "0738835919", "name": "\u0906\u0930\u0935 \u0921\u093e\u0930", "date_of_birth": "1920-07-17", "postcode": "BS1M 9US"},
+    {"nhs_number": "0738835919", "name": "\u0906\u0930\u0935 \u0921\u093e\u0930", "date_of_birth": "1920-07-17", "postcode": "BS1M 9US"},  # Used as sample - added through Django Admin facility
     {"nhs_number": "0804125937", "name": "Leah Chan", "date_of_birth": "1947-09-08", "postcode": "PA74 3RT"},
     {"nhs_number": "0162509243", "name": "Dr Malcolm Carpenter", "date_of_birth": "1926-08-19", "postcode": "M5W 6HF"},
     {"nhs_number": "1600195652", "name": "Mrs Gemma Wright", "date_of_birth": "1950-09-19", "postcode": "PL25 3GN"},
-    {"nhs_number": "0946730571", "name": "Adam Atkinson", "date_of_birth": "2004-04-25", "postcode": "G3H 3QT"},
+    {"nhs_number": "0946730571", "name": "Adam Atkinson", "date_of_birth": "2004-04-25", "postcode": "G3H 3QT"},  # Used as sample - added through Django Admin facility
     {"nhs_number": "1589171543", "name": "Miss Joan Lambert", "date_of_birth": "1909-08-03", "postcode": "CO30 1AW"},
     {"nhs_number": "0737739282", "name": "Leanne Goodwin", "date_of_birth": "1974-11-08", "postcode": "G36 1LX"},
     {"nhs_number": "1698115830", "name": "Gavin Johnson", "date_of_birth": "2003-08-17", "postcode": "L0D 4JE"},

@@ -7,48 +7,232 @@
 
 from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import Department, Clinician, Patient, Appointment
+from .helpers import is_valid_nhs_number, coerce_postcode
 
 
 # Create your views here.
-def create_patient(response: HttpRequest) -> HttpResponse:
-    response = 0
+def create_patient(request: HttpRequest) -> HttpResponse:
+    """
+    :summary: The HTTP request supplied must be by POST and should contain
+    a JSON representation of the patient to add to the system - note the
+    supplied NHS Number will be checked for checksum validity and if this
+    fails then the patient is not added to the system
+
+    :param request: HTTP request as a HttpRequest object
+
+    :return: HTTP response as a JSON string
+    """
+
+    # Must be by POST method
+    if request.method == "POST":
+        nhs_number = request.POST.get("nhs_number")
+
+        # Check NHS Number passes the checksum check
+        if is_valid_nhs_number(nhs_number):
+            # If NHS Number is OK then instantiate a Patient object instance and
+            # save it to the database through Django data model facilities
+            patient = Patient(nhs_number=nhs_number,
+                              name=request.POST.get("name"),
+                              date_of_birth=request.POST.get("date_of_birth"),
+                              postcode=coerce_postcode(request.POST.get("postcode")))
+            patient.save()
+            success = "true"
+            message = f"Patient {nhs_number} recorded into system"
+        else:
+            # Not a valid NHS Number so patient is not added to system and a suitable
+            # message is returned in the HTTP response
+            success = "false"
+            message = f"Patient {nhs_number} not recorded into system - failed NHS Number checksum check"
+    else:
+        # Not a using POST method so patient is not added to system and a suitable
+        # message is returned in the HTTP response
+        success = "false"
+        message = "Patient not recorded into system - must use POST method"
+
+    # Form HTTP response as JSON string - no value in "data" is returned
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
 @csrf_exempt
-def retrieve_patient(response: HttpRequest) -> HttpResponse:
-    response = 0
+def retrieve_patient(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary: Retrieves the Patient instance as a JSON string in the HTTP response
+    using the pk parameter which should be the NHS Number of the patient - note if
+    the patient with the supplied NHS Number is not recorded in the system then
+    the retrieve fails
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Patient instance as string
+
+    :return: HTTP response as a JSON string
+    """
+
+    try:
+        # Get Patient with given NHS Number
+        patient = Patient.objects.get(nhs_number=pk)
+        success = "true"
+        message = "Patient details returned"
+    except Patient.DoesNotExist:
+        # Patient was not found in the database so fail this retrieval returning
+        # a suitable message in the HTTP response
+        patient = ""
+        success = "false"
+        message = f"Patient with NHS Number {pk} is not recorded in the system"
+
+    # Form HTTP response as JSON string - if patient is found in the system then
+    # return the details of this patient in the value of the "data" element as
+    # a JSON string representation of the patient
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": [{str(patient)}]}}
+                '''
+
     return HttpResponse(response)
 
 
 @csrf_exempt
-def update_patient(response: HttpRequest) -> HttpResponse:
-    response = 0
+def update_patient(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Patient instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
-def delete_patient(response: HttpRequest) -> HttpResponse:
-    response = 0
+def delete_patient(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Patient instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
 @csrf_exempt
-def create_appointment(response: HttpRequest) -> HttpResponse:
-    response = 0
+def create_appointment(request: HttpRequest) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
-def retrieve_appointments(response: HttpRequest) -> HttpResponse:
-    response = 0
+def retrieve_appointment(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Appointment instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
+    return HttpResponse(response)
+
+
+def retrieve_appointments(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Appointment instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
 @csrf_exempt
-def update_appointment(response: HttpRequest) -> HttpResponse:
-    response = 0
+def update_appointment(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Appointment instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
 
 
-def delete_appointment(response: HttpRequest) -> HttpResponse:
-    response = 0
+def delete_appointment(request: HttpRequest, pk: str) -> HttpResponse:
+    """
+    :summary:
+
+    :param request: HTTP request as a HttpRequest object
+    :param pk: Key used to get Appointment instance as string
+
+    :return: HTTP response as a JSON string
+    """
+    success = "False"
+    message = ""
+
+    response = f'''{{"success": {success}}},
+                   {{"message": "{message}"}},
+                   {{"data": []}}
+                '''
+
     return HttpResponse(response)
