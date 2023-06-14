@@ -5,9 +5,13 @@ Note - when reading the following please also refer to the code comments made wi
 scripts. The relevant script files are:-
 
   appointments/models.py
+  
   appointments/views.py
+  
   appointments/urls.py
+  
   appointments/helpers.py
+  
   appointments/tests.py
   
 These can all be found in the root folder once the GitHub repository for the API has been cloned.
@@ -182,7 +186,16 @@ Desing Thinking, Missing Functions and Opportunities for Further Refactoring and
  1. Why choose Django for the framework? Yes it is one of the larger "full stack" frameworks and we are not interested in the frontend, however it is a
  well established approach (now at v4.2.2) and the benefit attained through its MVC architecture through URL routing, function views and data models are
  significant. The way the framework links with any implemented database is an excellent degree of abstraction resulting in no need for SQL statements.
- Also, a refactoring would be to adopt the Django RESTfull API Framework as this is lighter. Unfortunately I am unfamiliar with this but would consider
- 
+ Also, a refactoring would be to adopt the Django RESTful API Framework as this is lighter but still heavy on relevant features. Unfortunately I am
+ unfamiliar with this but would consider reworking this solution to adapt to it.
+   
+ 2. The client has not committed to any specific database product at the time of development so again Django can help here as it's database-agnostic
+ approach and higher level of abstract through it's data model allows vendor products to be quickly plugged into the applications. The samples 
+ provided here use the SQLite3 database (which is packaged with Python distributions at install-time) which is lightweight and quickly adopted. In the
+ future more robust and production-ready database products could be integrated since Django's migration facility provides the necessary abstraction to
+ populate a number of DBMS implementations with the application tables.
   
- 2. 
+ 3. There are a number of omissions from the full provided task list in this solution. Firstly, there is no internationalisation of the various HTTP
+ response messages. This is a feature of the Django package but was not implemented at this stage. Secondly, there is no attempt to process the
+ appointments according to cancellation or missed appointment times. This is probably the most servere criticism of this solution and is seen as a
+ first priority of any future feature inclusion.
