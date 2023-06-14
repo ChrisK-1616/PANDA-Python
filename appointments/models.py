@@ -77,7 +77,10 @@ class Appointment(models.Model):
     :summary: Model for appointments which are associated with patients at a given date and
     time, for a given duration and with a given clinician from their specific department, a
     single patient may have many appointments but only one patient and one clinician is
-    associated with any given appointment
+    associated with any given appointment - note that an appointment instance is uniquely
+    identified by a combination of both the patient NHS number and the datetime of the
+    appointment, this is because an appointment may only have one patient associated with
+    it and that patient can only be associated with one appointment at any given datetime
 
     :property patient:    reference to the NHS number of the patient persisted as a foreign
                           key into the Patient models
