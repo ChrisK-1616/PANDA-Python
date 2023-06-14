@@ -22,6 +22,11 @@ class Department(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
+        """
+        :summary: Provides a JSON string for the Department model instance
+
+        :return: JSON string as string
+        """
         return f"""{{'name': '{self.name}'}}"""
 
 
@@ -39,6 +44,11 @@ class Clinician(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
 
     def __str__(self):
+        """
+        :summary: Provides a JSON string for the Clinician model instance
+
+        :return: JSON string as string
+        """
         return f"""{{'name': '{self.name}'}}, {{'department': '{self.department.name}'}}"""
 
 
@@ -66,6 +76,11 @@ class Patient(models.Model):
     postcode = models.CharField(max_length=8)
 
     def __str__(self):
+        """
+        :summary: Provides a JSON string for the Patient model instance
+
+        :return: JSON string as string
+        """
         return f"""
                 {{'nhs_number': '{self.nhs_number}'}}, {{'name': '{self.name}'}},
                 {{'date_of_birth': '{self.date_of_birth}'}}, {{'postcode': '{self.postcode}'}}
@@ -109,6 +124,11 @@ class Appointment(models.Model):
     uuid = models.CharField(max_length=36)
 
     def __str__(self):
+        """
+        :summary: Provides a JSON string for the Appointment model instance
+
+        :return: JSON string as string
+        """
         return f"""
                 {{'patient': '{self.patient.nhs_number}'}}, {{'status': '{self.status}'}},
                 {{'time': '{self.time}'}}, {{'duration': '{self.duration}'}},
