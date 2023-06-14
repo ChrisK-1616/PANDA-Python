@@ -115,7 +115,8 @@ sample_patients = [
     {"nhs_number": "1991326211", "name": "Jeffrey Young", "date_of_birth": "1936-09-04", "postcode": "L79 2RW"},
     {"nhs_number": "0443743460", "name": "Joseph Evans", "date_of_birth": "1926-10-14", "postcode": "M8F 2AJ"}
 ]
-
+ck_appointment = {"patient": "4848030919", "status": "active", "time": "2018-01-21T16:30:00+01:00", "duration": "1h15m", "clinician": "Jason Holloway", "department": "oncology", "postcode": "UB56 7XQ", "id": "343d31d4-5993-47ef-a468-7884a467ae80"}
+ck_appointment_pk = {"patient": "4848030919", "time": "2018-01-21T16:30:00+01:00"}
 
 sample_appointments = [
     {"patient": "1373645350", "status": "attended", "time": "2018-01-21T16:30:00+00:00", "duration": "15m", "clinician": "Jason Holloway", "department": "oncology", "postcode": "UB56 7XQ", "id": "343d31d4-5993-47ef-a468-7884a467ae80"},

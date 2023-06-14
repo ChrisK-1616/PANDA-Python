@@ -13,7 +13,7 @@ class Department(models.Model):
     """
     :summary: Model for departments which are associated with appointments, a department
     may be allocated to many appointments but only one department is associated with any
-    given appointment
+    given appointment - note the name of the department is used as its key
 
     :property name: full name of the department persisted as an UTF8 string of up to 200
                     characters, note - this can be stored as unicode characters to allow
@@ -34,7 +34,7 @@ class Clinician(models.Model):
     """
     :summary: Model for clinicians which are associated with appointments, a clinician may
     be allocated to many appointments but only one clinician is associated with any given
-    appointment
+    appointment - note the name of the clinician is used as its key
 
     :property name: full name of the clinician persisted as an UTF8 string of up to 200
                     characters, note - this can be stored as unicode characters to allow
@@ -104,10 +104,9 @@ class Appointment(models.Model):
                           a string of the corresponding to a value taken from the previous
                           list of valid values so requires up to 9 characters
     :property time:       full year, month, day, hours and minutes of the appointment's date
-                          and time persisted as datetime type data including any timezone
-                          offset
+                          and time persisted as string of up to 25 characters
     :property duration:   duration in hours and minutes the appointment is estimated to last
-                          persisted as time duration type data
+                          persisted as string of up to 16 characters
     :property clinician:  reference to the clinician that the appointment is with persisted
                           as a foreign key into the Clinician models
     :property department: reference to the department that the appointment is within persisted
@@ -117,8 +116,8 @@ class Appointment(models.Model):
     """
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     status = models.CharField(max_length=9)
-    time = models.DateTimeField()
-    duration = models.DurationField()
+    time = models.CharField(max_length=25)
+    duration = models.CharField(max_length=16)
     clinician = models.ForeignKey(Clinician, on_delete=models.CASCADE)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     uuid = models.CharField(max_length=36)

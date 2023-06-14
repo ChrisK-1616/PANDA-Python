@@ -27,6 +27,7 @@ def create_patient(request: HttpRequest, data: str) -> HttpResponse:
     :return: HTTP response as a JSON string
     """
 
+    # Parse JSON data
     patient_dict = json.loads(data)
     nhs_number = patient_dict["nhs_number"]
 
@@ -106,6 +107,7 @@ def update_patient(request: HttpRequest, data: str) -> HttpResponse:
     :return: HTTP response as a JSON string
     """
 
+    # Parse JSON data
     patient_dict = json.loads(data)
     nhs_number = patient_dict["nhs_number"]
 
@@ -143,6 +145,7 @@ def delete_patient(request: HttpRequest, pk: str) -> HttpResponse:
 
     :return: HTTP response as a JSON string
     """
+
     try:
         # Get Patient with given NHS Number and delete it from the system
         patient = Patient.objects.get(nhs_number=pk)
@@ -165,17 +168,60 @@ def delete_patient(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @csrf_exempt
-def create_appointment(request: HttpRequest) -> HttpResponse:
+def create_appointment(request: HttpRequest, data: str) -> HttpResponse:
     """
-    :summary:
+    :summary: The HTTP request supplied should be by GET and should contain
+    a JSON representation of the appointment to add to the system - note the
+    supplied patient must be recorded in the system or the appointment will
+    not be added to the system
 
     :param request: HTTP request as a HttpRequest object
+    :param data: JSON representation of the patient to be created as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
 
+    # Parse JSON data
+    appointment_dict = json.loads(data)
+    patient_nhs_number = appointment_dict["patient"]
+
+    try:
+        patient = Patient.objects.get(nhs_number=patient_nhs_number)
+        time = appointment_dict["time"]
+
+        # Need to get the clinician from the recorded clinicians in the system
+        # however this clinician may not exist in the system yet so it will have
+        # to be added to the system - note this may also require adding the
+        # department of the clinician if that also does not exist in the system
+        try:
+            department = Department.objects.get(name=appointment_dict["department"])
+        except Department.DoesNotExist:
+            department = Department(name=appointment_dict["department"])
+            department.save()
+
+        try:
+            clinician = Clinician.objects.get(name=appointment_dict["clinician"])
+        except Clinician.DoesNotExist:
+            clinician = Clinician(name=appointment_dict["clinician"], department=department)
+            clinician.save()
+
+        appointment = Appointment(patient=patient,
+                                  status=appointment_dict["status"],
+                                  time=time,
+                                  duration=appointment_dict["duration"],
+                                  clinician=clinician,
+                                  department=department,
+                                  uuid=appointment_dict["id"])
+        appointment.save()
+        success = "true"
+        message = f"Appointment for patient {patient_nhs_number} at {time} recorded into system"
+    except Patient.DoesNotExist:
+        # Patient was not found in the system so cannot add this appointment to the system
+        # and return a suitable message in the HTTP response
+        success = "false"
+        message = f"Patient with NHS Number {patient_nhs_number} is not recorded in the system - cannot create this appointment"
+
+    # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
                    {{"data": []}}
@@ -187,58 +233,128 @@ def create_appointment(request: HttpRequest) -> HttpResponse:
 @csrf_exempt
 def retrieve_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     """
-    :summary:
+    :summary: Retrieves the appointment instance as a JSON string in the HTTP
+    response using the pk parameter which should be provided as a JSON string
+    containing the NHS Number of the patient along with the datetime of the
+    appointment - note if the patient with the supplied NHS Number and/or the
+    given datetime is not recorded in the system then the retrieve fails
+
+    JSON string for pk should be of the form:-
+
+    {
+     "patient": "nnnnnnnnnn",
+     "time": "yyyy-mm-ddThh:mm:00+-tz"
+    }
+
+    For instance:-
+
+    {
+     "patient": "1373645350",
+     "time": "2018-09-04T13:00:00+01:00"
+    }
 
     :param request: HTTP request as a HttpRequest object
-    :param pk: Key used to get Appointment instance as string
+    :param pk: Key used to get appointment instance as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
 
+    try:
+        # Parse JSON data as key for appointment
+        pk_dict = json.loads(pk)
+        patient_nhs_number = pk_dict["patient"]
+        appointment_time = pk_dict["time"]
+
+        # Get appointment with given NHS Number and appointment time
+        patient = Patient.objects.get(nhs_number=patient_nhs_number)
+        appointment = Appointment.objects.get(patient=patient, time=appointment_time)
+        success = "true"
+        message = "Appointment details returned"
+    except Patient.DoesNotExist:
+        # Patient was not found in the system so fail this retrieval returning
+        # a suitable message in the HTTP response
+        appointment = ""
+        success = "false"
+        message = f"Patient {patient_nhs_number} is not recorded in the system"
+    except Appointment.DoesNotExist:
+        # Appointment was not found in the system so fail this retrieval returning
+        # a suitable message in the HTTP response
+        appointment = ""
+        success = "false"
+        message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} is not recorded in the system"
+
+    # Form HTTP response as JSON string - if appointment is found in the system then
+    # return the details of this appointment in the value of the "data" element as
+    # a JSON string representation of the appointment
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
-                   {{"data": []}}
+                   {{"data": [{str(appointment)}]}}
                 '''
 
     return HttpResponse(response)
 
 
 @csrf_exempt
-def retrieve_appointments(request: HttpRequest, pk: str) -> HttpResponse:
+def update_appointment(request: HttpRequest, data: str) -> HttpResponse:
     """
-    :summary:
+    :summary: Retrieves and updates the appointment data (which is provided as a
+    JSON string) for the supplied appointment - note if the appointment with the
+    supplied NHS Number at the supplied appointment time is not recorded in the
+    system then the update fails
 
     :param request: HTTP request as a HttpRequest object
-    :param pk: Key used to get Appointment instance as string
+    :param data: JSON representation of the appointment to be updated as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
+    try:
+        # Parse JSON data
+        appointment_dict = json.loads(data)
+        patient_nhs_number = appointment_dict["patient"]
+        appointment_time = appointment_dict["time"]
 
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
-                '''
+        # Get appointment with given NHS Number and appointment time
+        patient = Patient.objects.get(nhs_number=patient_nhs_number)
+        appointment = Appointment.objects.get(patient=patient, time=appointment_time)
 
-    return HttpResponse(response)
+        # Need to get the clinician from the recorded clinicians in the system
+        # however this clinician may not exist in the system yet so it will have
+        # to be added to the system - note this may also require adding the
+        # department of the clinician if that also does not exist in the system
+        try:
+            department = Department.objects.get(name=appointment_dict["department"])
+        except Department.DoesNotExist:
+            department = Department(name=appointment_dict["department"])
+            department.save()
 
+        try:
+            clinician = Clinician.objects.get(name=appointment_dict["clinician"])
+        except Clinician.DoesNotExist:
+            clinician = Clinician(name=appointment_dict["clinician"], department=department)
+            clinician.save()
 
-@csrf_exempt
-def update_appointment(request: HttpRequest, pk: str) -> HttpResponse:
-    """
-    :summary:
+        appointment.status = appointment_dict["status"]
+        appointment.duration = appointment_dict["duration"]
+        appointment.clinician = clinician
+        appointment.department = department
+        appointment.uuid = appointment_dict["id"]
+        appointment.save()
 
-    :param request: HTTP request as a HttpRequest object
-    :param pk: Key used to get Appointment instance as string
+        success = "true"
+        message = f"Appointment for patient {patient_nhs_number} at {appointment_time} updated in system"
+    except Patient.DoesNotExist:
+        # Patient was not found in the system so fail this update returning
+        # a suitable message in the HTTP response
+        success = "false"
+        message = f"Patient {patient_nhs_number} is not recorded in the system - no update done"
+    except Appointment.DoesNotExist:
+        # Appointment was not found in the system so fail this retrieval returning
+        # a suitable message in the HTTP response
+        appointment = ""
+        success = "false"
+        message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} is not recorded in the system - no update done"
 
-    :return: HTTP response as a JSON string
-    """
-    success = "False"
-    message = ""
-
+    # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
                    {{"data": []}}
@@ -250,16 +366,57 @@ def update_appointment(request: HttpRequest, pk: str) -> HttpResponse:
 @csrf_exempt
 def delete_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     """
-    :summary:
+    :summary: Deletes the appointment instance keyed by the pk parameter which
+    should be provided as a JSON string containing the NHS Number of the patient
+    along with the datetime of the appointment - note if the patient with the
+    supplied NHS Number and/or the given datetime is not recorded in the system
+    then the delete fails
+
+    JSON string for pk should be of the form:-
+
+    {
+     "patient": "nnnnnnnnnn",
+     "time": "yyyy-mm-ddThh:mm:00+-tz"
+    }
+
+    For instance:-
+
+    {
+     "patient": "1373645350",
+     "time": "2018-09-04T13:00:00+01:00"
+    }
 
     :param request: HTTP request as a HttpRequest object
     :param pk: Key used to get Appointment instance as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
+    try:
+        # Parse JSON data as key for appointment
+        pk_dict = json.loads(pk)
+        patient_nhs_number = pk_dict["patient"]
+        appointment_time = pk_dict["time"]
 
+        # Get appointment with given NHS Number and appointment time
+        patient = Patient.objects.get(nhs_number=patient_nhs_number)
+        appointment = Appointment.objects.get(patient=patient, time=appointment_time)
+        appointment.delete()
+        success = "true"
+        message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} deleted from system"
+    except Patient.DoesNotExist:
+        # Patient was not found in the system so fail this retrieval returning
+        # a suitable message in the HTTP response
+        appointment = ""
+        success = "false"
+        message = f"Patient {patient_nhs_number} is not recorded in the system - no deletion done"
+    except Appointment.DoesNotExist:
+        # Appointment was not found in the system so fail this retrieval returning
+        # a suitable message in the HTTP response
+        appointment = ""
+        success = "false"
+        message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} is not recorded in the system - no deletion done"
+
+    # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
                    {{"data": []}}

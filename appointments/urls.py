@@ -15,7 +15,6 @@ urlpatterns = [
     path("delete-patient/<str:pk>/", views.delete_patient, name="delete-patient"),
     path("create-appointment/<str:data>/", views.create_appointment, name="create-appointment"),
     path("retrieve-appointment/<str:pk>/", views.retrieve_appointment, name="retrieve-appointment"),
-    path("retrieve-appointments/<str:pk>/", views.retrieve_appointments, name="retrieve-appointments"),
     path("update-appointment/<str:data>/", views.update_appointment, name="update-appointment"),
     path("delete-appointment/<str:pk>/", views.delete_appointment, name="delete-appointment"),
 ]
