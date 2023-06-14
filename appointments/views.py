@@ -49,9 +49,9 @@ def create_patient(request: HttpRequest, data: str) -> HttpResponse:
         message = f"Patient {nhs_number} not recorded into system - failed NHS Number checksum check"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
@@ -86,9 +86,9 @@ def retrieve_patient(request: HttpRequest, pk: str) -> HttpResponse:
     # Form HTTP response as JSON string - if patient is found in the system then
     # return the details of this patient in the value of the "data" element as
     # a JSON string representation of the patient
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": [{str(patient)}]}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": [{str(patient)}]}}
                 '''
 
     return HttpResponse(response)
@@ -126,9 +126,9 @@ def update_patient(request: HttpRequest, data: str) -> HttpResponse:
         message = f"Patient with NHS Number {nhs_number} is not recorded in the system - no update done"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
@@ -159,9 +159,9 @@ def delete_patient(request: HttpRequest, pk: str) -> HttpResponse:
         message = f"Patient with NHS Number {pk} is not recorded in the system - no deletion performed"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
@@ -222,9 +222,9 @@ def create_appointment(request: HttpRequest, data: str) -> HttpResponse:
         message = f"Patient with NHS Number {patient_nhs_number} is not recorded in the system - cannot create this appointment"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
@@ -286,9 +286,9 @@ def retrieve_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     # Form HTTP response as JSON string - if appointment is found in the system then
     # return the details of this appointment in the value of the "data" element as
     # a JSON string representation of the appointment
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": [{str(appointment)}]}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": [{str(appointment)}]}}
                 '''
 
     return HttpResponse(response)
@@ -355,9 +355,9 @@ def update_appointment(request: HttpRequest, data: str) -> HttpResponse:
         message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} is not recorded in the system - no update done"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
@@ -417,9 +417,9 @@ def delete_appointment(request: HttpRequest, pk: str) -> HttpResponse:
         message = f"Appointment for patient {patient_nhs_number} at time {appointment_time} is not recorded in the system - no deletion done"
 
     # Form HTTP response as JSON string - no value in "data" is returned
-    response = f'''{{"success": {success}}},
-                   {{"message": "{message}"}},
-                   {{"data": []}}
+    response = f'''{{"success": {success},
+                   "message": "{message}",
+                   "data": []}}
                 '''
 
     return HttpResponse(response)
