@@ -9,46 +9,43 @@ from django.http import HttpRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Department, Clinician, Patient, Appointment
 from .helpers import is_valid_nhs_number, coerce_postcode
+import json
 
 
 # Create your views here.
-def create_patient(request: HttpRequest) -> HttpResponse:
+@csrf_exempt
+def create_patient(request: HttpRequest, data: str) -> HttpResponse:
     """
-    :summary: The HTTP request supplied must be by POST and should contain
+    :summary: The HTTP request supplied should be by GET and should contain
     a JSON representation of the patient to add to the system - note the
     supplied NHS Number will be checked for checksum validity and if this
     fails then the patient is not added to the system
 
     :param request: HTTP request as a HttpRequest object
+    :param data: JSON representation of the patient to be created as string
 
     :return: HTTP response as a JSON string
     """
 
-    # Must be by POST method
-    if request.method == "POST":
-        nhs_number = request.POST.get("nhs_number")
+    patient_dict = json.loads(data)
+    nhs_number = patient_dict["nhs_number"]
 
-        # Check NHS Number passes the checksum check
-        if is_valid_nhs_number(nhs_number):
-            # If NHS Number is OK then instantiate a Patient object instance and
-            # save it to the database through Django data model facilities
-            patient = Patient(nhs_number=nhs_number,
-                              name=request.POST.get("name"),
-                              date_of_birth=request.POST.get("date_of_birth"),
-                              postcode=coerce_postcode(request.POST.get("postcode")))
-            patient.save()
-            success = "true"
-            message = f"Patient {nhs_number} recorded into system"
-        else:
-            # Not a valid NHS Number so patient is not added to system and a suitable
-            # message is returned in the HTTP response
-            success = "false"
-            message = f"Patient {nhs_number} not recorded into system - failed NHS Number checksum check"
+    # Check NHS Number passes the checksum check
+    if is_valid_nhs_number(nhs_number):
+        # If NHS Number is OK then instantiate a Patient object instance and
+        # save it to the system through Django data model facilities
+        patient = Patient(nhs_number=nhs_number,
+                          name=patient_dict["name"],
+                          date_of_birth=patient_dict["date_of_birth"],
+                          postcode=coerce_postcode(patient_dict["postcode"]))
+        patient.save()
+        success = "true"
+        message = f"Patient {nhs_number} recorded into system"
     else:
-        # Not a using POST method so patient is not added to system and a suitable
-        # message is returned in the HTTP response
+        # Not a valid NHS Number so patient is not added to the system and a
+        # suitable message is returned in the HTTP response
         success = "false"
-        message = "Patient not recorded into system - must use POST method"
+        message = f"Patient {nhs_number} not recorded into system - failed NHS Number checksum check"
 
     # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
@@ -79,7 +76,7 @@ def retrieve_patient(request: HttpRequest, pk: str) -> HttpResponse:
         success = "true"
         message = "Patient details returned"
     except Patient.DoesNotExist:
-        # Patient was not found in the database so fail this retrieval returning
+        # Patient was not found in the system so fail this retrieval returning
         # a suitable message in the HTTP response
         patient = ""
         success = "false"
@@ -97,18 +94,36 @@ def retrieve_patient(request: HttpRequest, pk: str) -> HttpResponse:
 
 
 @csrf_exempt
-def update_patient(request: HttpRequest, pk: str) -> HttpResponse:
+def update_patient(request: HttpRequest, data: str) -> HttpResponse:
     """
-    :summary:
+    :summary: Retrieves and updates the patient data (which is provided as a JSON
+    string) for the supplied patient - note if the patient with the supplied NHS
+    Number is not recorded in the system then the update fails
 
     :param request: HTTP request as a HttpRequest object
-    :param pk: Key used to get Patient instance as string
+    :param data: JSON representation of the patient to be updated as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
 
+    patient_dict = json.loads(data)
+    nhs_number = patient_dict["nhs_number"]
+
+    try:
+        patient = Patient.objects.get(nhs_number=nhs_number)
+        patient.name = patient_dict["name"]
+        patient.date_of_birth = patient_dict["date_of_birth"]
+        patient.postcode = coerce_postcode(patient_dict["postcode"])
+        patient.save()
+        success = "true"
+        message = f"Patient {nhs_number} data updated in system"
+    except Patient.DoesNotExist:
+        # Patient not recorded in the system so no update done and a suitable message
+        # is returned in the HTTP response
+        success = "false"
+        message = f"Patient with NHS Number {nhs_number} is not recorded in the system - no update done"
+
+    # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
                    {{"data": []}}
@@ -117,18 +132,30 @@ def update_patient(request: HttpRequest, pk: str) -> HttpResponse:
     return HttpResponse(response)
 
 
+@csrf_exempt
 def delete_patient(request: HttpRequest, pk: str) -> HttpResponse:
     """
-    :summary:
+    :summary: Deletes the patient from the system with the NHS Number supplied - note
+    if the patient is not recorded in the system then no delete is done
 
     :param request: HTTP request as a HttpRequest object
     :param pk: Key used to get Patient instance as string
 
     :return: HTTP response as a JSON string
     """
-    success = "False"
-    message = ""
+    try:
+        # Get Patient with given NHS Number and delete it from the system
+        patient = Patient.objects.get(nhs_number=pk)
+        patient.delete()
+        success = "true"
+        message = f"Patient {pk} deleted from system"
+    except Patient.DoesNotExist:
+        # Patient was not found in the system so fail this deletion returning
+        # a suitable message in the HTTP response
+        success = "false"
+        message = f"Patient with NHS Number {pk} is not recorded in the system - no deletion performed"
 
+    # Form HTTP response as JSON string - no value in "data" is returned
     response = f'''{{"success": {success}}},
                    {{"message": "{message}"}},
                    {{"data": []}}
@@ -157,6 +184,7 @@ def create_appointment(request: HttpRequest) -> HttpResponse:
     return HttpResponse(response)
 
 
+@csrf_exempt
 def retrieve_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     """
     :summary:
@@ -177,6 +205,7 @@ def retrieve_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     return HttpResponse(response)
 
 
+@csrf_exempt
 def retrieve_appointments(request: HttpRequest, pk: str) -> HttpResponse:
     """
     :summary:
@@ -218,6 +247,7 @@ def update_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     return HttpResponse(response)
 
 
+@csrf_exempt
 def delete_appointment(request: HttpRequest, pk: str) -> HttpResponse:
     """
     :summary:
