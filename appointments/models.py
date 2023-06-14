@@ -49,7 +49,7 @@ class Clinician(models.Model):
 
         :return: JSON string as string
         """
-        return f'''{{"name": "{self.name}"}}, {{"department": "{self.department.name}"}}'''
+        return f'''{{"name": "{self.name}", "department": "{self.department.name}"}}'''
 
 
 class Patient(models.Model):
@@ -82,8 +82,8 @@ class Patient(models.Model):
         :return: JSON string as string
         """
         return f'''
-                {{"nhs_number": "{self.nhs_number}"}}, {{"name": "{self.name}"}},
-                {{"date_of_birth": "{self.date_of_birth}"}}, {{"postcode": "{self.postcode}"}}
+                {{"nhs_number": "{self.nhs_number}", "name": "{self.name}",
+                "date_of_birth": "{self.date_of_birth}", "postcode": "{self.postcode}"}}
                 '''
 
 
@@ -129,9 +129,9 @@ class Appointment(models.Model):
         :return: JSON string as string
         """
         return f'''
-                {{"patient": "{self.patient.nhs_number}"}}, {{"status": "{self.status}"}},
-                {{"time": "{self.time}"}}, {{"duration": "{self.duration}"}},
-                {{"clinician": "{self.clinician.name}"}},
-                {{"department": "{self.department.name}"}},
-                {{"postcode": "{self.patient.postcode}"}}, {{"id": "{self.uuid}"}}
+                {{"patient": "{self.patient.nhs_number}", "status": "{self.status}",
+                "time": "{self.time}", "duration": "{self.duration}",
+                "clinician": "{self.clinician.name}",
+                "department": "{self.department.name}",
+                "postcode": "{self.patient.postcode}", "id": "{self.uuid}"}}
                 '''
