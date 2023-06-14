@@ -303,11 +303,8 @@ class TestHelpers(unittest.TestCase):
 #         """
 #
 #         # Arrange
-#         input_data = {"nhs_number": "4848030919", "name": "Chris Knowles", "date_of_birth": "1980-01-01", "postcode": "NE6 0FX"}
-#         expected_data = {"nhs_number": "4848030919", "name": "Chris Knowles", "date_of_birth": "1980-01-01", "postcode": "NE6 0FX"}
 #
 #         # Act
-#         result = {"nhs_number": "4848030919", "name": "Chris Knowles", "date_of_birth": "1980-01-01", "postcode": "NE6 0FX"}
 #
 #         # Assert
 #         self.assertEqual(input_data, expected_data,
