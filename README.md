@@ -70,7 +70,7 @@ Create Patient:-
 --------------
 Make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/create-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
+  127.0.0.1:12864/appointments/create-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
   
 The supplied patient data will have the NHS Number checksum checked before it is added to the database, if this fails then the create call fails and a suitable
 JSON string response is returned. Also, the postcode is coerced to the form:-
@@ -86,7 +86,7 @@ Retrieve Patient:-
 ----------------
 Make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/retrieve-patient/1373645350/
+  127.0.0.1:12864/appointments/retrieve-patient/1373645350/
   
 Note the "1373645350" element of the URL is the NHS Number of the patient to be retrieved and is all that is needed. If there is a patient in the system with
 this NHS Number then the details of the patient will be returned in the HTTP response and held in the "data" element of the JSON string. If there is no
@@ -96,7 +96,7 @@ Update Patient:-
 --------------
 Similar to the create API call, make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/update-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark-Smith", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
+  127.0.0.1:12864/appointments/update-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark-Smith", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
   
 Again checks are made to ensure an existing patient instance to update and coercing of the postcode. If the update fails then a suitable message is provided
 in the HTTP response JSON string.
@@ -105,7 +105,7 @@ Delete Patient:-
 --------------
 Similar to the retrieve API call, make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/delete-patient/1373645350/
+  127.0.0.1:12864/appointments/delete-patient/1373645350/
   
 Where the "1373645350" element of the URL is the NHS Number of the patient to be deleted. If the supplied patient is not recorded in the system then a
 suitable message is returned in the HTTP response JSON string and obviously no deletion occurs. Note that since the patient is referred to in appointment
@@ -139,7 +139,7 @@ Create Appointment:-
 ------------------
 Make an HTTP client call of the URL form (with example appointment data):-
   
-  127.0.0.1:12864/create-appointment/{"patient": "1373645350", "status": "attended", "time": "2018-01-21T16:30:00+00:00", "duration": "15m", "clinician":
+  127.0.0.1:12864/appointments/create-appointment/{"patient": "1373645350", "status": "attended", "time": "2018-01-21T16:30:00+00:00", "duration": "15m", "clinician":
                                       "Jason Holloway", "department": "oncology", "postcode": "UB56 7XQ", "id": "343d31d4-5993-47ef-a468-7884a467ae80"}/
   
 This call will fail to create a new appointment if there existing no patient with the provided NHS Number (this is in the "patient" element of the
@@ -155,7 +155,7 @@ Retrieve Appointment:-
 --------------------
 Make an HTTP client call of the URL form (with example appointment key data):-
   
-  127.0.0.1:12864/retrieve-appointment/{"patient": "1373645350", "time": "2018-01-21T16:30:00+00:00"}/
+  127.0.0.1:12864/appointments/retrieve-appointment/{"patient": "1373645350", "time": "2018-01-21T16:30:00+00:00"}/
   
 Please refer to the earlier overview of how appointments are keyed. If there is an appointment in the system with the supplied key then the details of the
 appointment will be returned in the HTTP response and held in the "data" element of the JSON string. If there is no appointment found then the retrieve call
@@ -165,7 +165,7 @@ Update Appointment:-
 ------------------
 Similar to the create API call, make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/update-appointment/{"patient": "1373645350", "status": "attended", "time": "2018-01-21T16:30:00+00:00", "duration": "15m", "clinician":
+  127.0.0.1:12864/appointments/update-appointment/{"patient": "1373645350", "status": "attended", "time": "2018-01-21T16:30:00+00:00", "duration": "15m", "clinician":
                                       "Peter Smith", "department": "urology", "postcode": "UB56 7XQ", "id": "343d31d4-5993-47ef-a468-7884a467ae80"}/
   
 Again this update will only successfully complete if the appointment is found in the database. Otherwise it fails and a suitable message is returned in the
@@ -175,7 +175,7 @@ Delete Appointment:-
 ------------------
 Similar to the retrieve API call, make an HTTP client call of the URL form (with example appointment key data):-
   
-  127.0.0.1:12864/delete-appointment/{"patient": "1373645350", "time": "2018-01-21T16:30:00+00:00"}/
+  127.0.0.1:12864/appointments/delete-appointment/{"patient": "1373645350", "time": "2018-01-21T16:30:00+00:00"}/
   
 Deletion will only occur if the appointment is found and if it fails then a suitable message is returned in the HTTP response JSON string 
 
