@@ -1,5 +1,5 @@
 # PANDA-Python
-Aire Logic Tech Test Portal: Patient Appointment Backend - write a CRUD backend which stores patient demographic and appointment data
+Patient Appointment Backend - write a CRUD backend which stores patient demographic and appointment data
 
 Note - when reading the following please also refer to the code comments made within the relevant Python scripts for more insight into the operation of the
 scripts. The relevant script files are:-
@@ -70,7 +70,7 @@ Create Patient:-
 --------------
 Make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/appointments/create-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
+  127.0.0.1:12864/appointments/create-patient/{"nhs_number": "1373645350", "name": "Dr A Foster", "date_of_birth": "1996-02-01", "postcode": "X6 2YZ"}/
   
 The supplied patient data will have the NHS Number checksum checked before it is added to the database, if this fails then the create call fails and a suitable
 JSON string response is returned. Also, the postcode is coerced to the form:-
@@ -96,7 +96,7 @@ Update Patient:-
 --------------
 Similar to the create API call, make an HTTP client call of the URL form (with example patient data):-
   
-  127.0.0.1:12864/appointments/update-patient/{"nhs_number": "1373645350", "name": "Dr Glenn Clark-Smith", "date_of_birth": "1996-02-01", "postcode": "N6 2FA"}/
+  127.0.0.1:12864/appointments/update-patient/{"nhs_number": "1373645350", "name": "Dr A Foster-Gloucester", "date_of_birth": "1996-02-01", "postcode": "X6 2YZ"}/
   
 Again checks are made to ensure an existing patient instance to update and coercing of the postcode. If the update fails then a suitable message is provided
 in the HTTP response JSON string.
@@ -211,3 +211,4 @@ Design Thinking, Missing Functions and Opportunities for Further Refactoring and
  solutions have been implemented.
   
  Chris Knowles.
+ 
