@@ -1,4 +1,4 @@
-# PANDA-Python
+# PatientsSystemAPI-Python
 Patient Appointment Backend - write a CRUD backend which stores patient demographic and appointment data
 
 Note - when reading the following please also refer to the code comments made within the relevant Python scripts for more insight into the operation of the
